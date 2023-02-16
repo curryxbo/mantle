@@ -2,6 +2,7 @@ package store
 
 import (
 	"encoding/json"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/mantlenetworkio/mantle/tss/slash"
 	"github.com/syndtr/goleveldb/leveldb"
@@ -154,4 +155,19 @@ func (s *Storage) GetCulprits() []string {
 		panic(err)
 	}
 	return ret
+}
+
+func (s *Storage) RemoveCulprits() error {
+	bz, err := s.db.Get(getCulpritsKey(), nil)
+	if err != nil {
+		if err == leveldb.ErrNotFound {
+			return nil
+		} else {
+			return err
+		}
+	}
+	if err := s.db.Delete(getCulpritsKey(), nil); err != nil {
+		return err
+	}
+	return nil
 }

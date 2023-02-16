@@ -27,7 +27,6 @@ type QueryService struct {
 
 func NewQueryService(url, tssGroupContractAddress string, confirmBlocks int, store slash.SlashingStore) QueryService {
 	cli, err := ethclient.Dial(url)
-	log.Info("-----------l1 client ", "url", url)
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +44,6 @@ func NewQueryService(url, tssGroupContractAddress string, confirmBlocks int, sto
 
 func (q QueryService) QueryActiveInfo() (types.TssCommitteeInfo, error) {
 	currentBlockNumber, err := q.ethClient.BlockNumber(context.Background())
-	log.Info("-------------Current ", "block number", currentBlockNumber)
 	if err != nil {
 		return types.TssCommitteeInfo{}, err
 	}
@@ -53,7 +51,6 @@ func (q QueryService) QueryActiveInfo() (types.TssCommitteeInfo, error) {
 	if err != nil {
 		return types.TssCommitteeInfo{}, err
 	}
-	log.Info("-----------tss group manager ", "acive tss members", activeTssMembers)
 	if len(cpk) == 0 {
 		return types.TssCommitteeInfo{}, errors.New("cpk is not confirmed")
 	}

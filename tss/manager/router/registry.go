@@ -2,10 +2,11 @@ package router
 
 import (
 	"errors"
-	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 	"net/http"
 	"strconv"
+
+	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mantlenetworkio/mantle/l2geth/log"
@@ -99,12 +100,24 @@ func (registry *Registry) DeleteSlashHandler() gin.HandlerFunc {
 			return
 		}
 		address := common.HexToAddress(addressStr)
-		index, err := strconv.Atoi(batchIndexStr)
+		index, err := strconv.ParseUint(batchIndexStr, 10, 64)
 		if err != nil {
 			c.String(http.StatusBadRequest, "wrong format index")
 			return
 		}
 		registry.adminService.RemoveSlashingInfo(address, uint64(index))
+		c.String(http.StatusOK, "success")
+	}
+}
+
+func (registry *Registry) DeleteCulprits() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		err := registry.adminService.RemoveCulprits()
+		if err != nil {
+			c.String(http.StatusInternalServerError, err.Error())
+			log.Error("failed to delete culprits", "error", err)
+			return
+		}
 		c.String(http.StatusOK, "success")
 	}
 }
