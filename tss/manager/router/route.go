@@ -1,8 +1,9 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func (registry *Registry) Register(r *gin.Engine) {
@@ -16,5 +17,5 @@ func (registry *Registry) Register(r *gin.Engine) {
 	v1Router.GET("/admin/height", registry.GetHeightHandler())
 	v1Router.POST("/admin/reset/height", registry.ResetHeightHandler())
 	v1Router.DELETE("/admin/delete/slash", registry.DeleteSlashHandler())
-	v1Router.DELETE("/admin/delete/culprits",)
+	v1Router.DELETE("/admin/delete/culprits", registry.DeleteCulprits())
 }
