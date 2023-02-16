@@ -158,7 +158,7 @@ func (s *Storage) GetCulprits() []string {
 }
 
 func (s *Storage) RemoveCulprits() error {
-	bz, err := s.db.Get(getCulpritsKey(), nil)
+	_, err := s.db.Get(getCulpritsKey(), nil)
 	if err != nil {
 		if err == leveldb.ErrNotFound {
 			return nil
