@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sync"
+
 	"github.com/influxdata/influxdb/pkg/slices"
 	"github.com/mantlenetworkio/mantle/l2geth/log"
 	tss "github.com/mantlenetworkio/mantle/tss/common"
@@ -12,16 +14,18 @@ import (
 	"github.com/mantlenetworkio/mantle/tss/ws/server"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	tmtypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
-	"sync"
 )
 
 func (m Manager) agreement(ctx types.Context, request interface{}, method tss.Method) (types.Context, error) {
 	respChan := make(chan server.ResponseMsg)
 	stopChan := make(chan struct{})
+	log.Info("----------- start to register ws channel")
 	if err := m.wsServer.RegisterResChannel("ASK_"+ctx.RequestId(), respChan, stopChan); err != nil {
 		log.Error("failed to register response channel", "step", "agreement", "err", err)
 		return types.Context{}, err
 	}
+	log.Info("----------- end to register ws channel")
+
 	requestBz, err := json.Marshal(request)
 	if err != nil {
 		return types.Context{}, err

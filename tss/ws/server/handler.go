@@ -96,7 +96,7 @@ func (wm *WebsocketManager) RegisterResChannel(requestId string, recvChan chan R
 	wm.rcRWLock.Lock()
 	defer wm.rcRWLock.Unlock()
 	wm.recvChanMap[requestId] = recvChan
-
+	wm.logger.Info("register channel ", "requestId", requestId)
 	go func() {
 		<-stopChan // block util stop
 		wm.unregisterRecvChan(requestId)
