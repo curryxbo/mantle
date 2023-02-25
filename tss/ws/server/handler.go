@@ -93,6 +93,7 @@ func (wm *WebsocketManager) AliveNodes() []string {
 }
 
 func (wm *WebsocketManager) RegisterResChannel(requestId string, recvChan chan ResponseMsg, stopChan chan struct{}) error {
+	wm.logger.Info("-------start to register channel")
 	wm.rcRWLock.Lock()
 	defer wm.rcRWLock.Unlock()
 	wm.recvChanMap[requestId] = recvChan
