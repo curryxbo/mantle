@@ -94,15 +94,11 @@ func (wm *WebsocketManager) AliveNodes() []string {
 
 func (wm *WebsocketManager) RegisterResChannel(requestId string, recvChan chan ResponseMsg, stopChan chan struct{}) error {
 	wm.logger.Info("-------start to register channel")
-	wm.rcRWLock.Lock()
-	defer wm.rcRWLock.Unlock()
-	wm.recvChanMap[requestId] = recvChan
-	wm.logger.Info("register channel ", "requestId", requestId)
+	wm.registerResChannel(requestId, recvChan)
 	go func() {
 		<-stopChan // block util stop
 		wm.unregisterRecvChan(requestId)
 	}()
-
 	return nil
 }
 
@@ -123,6 +119,13 @@ func (wm *WebsocketManager) unregisterRecvChan(requestId string) {
 	wm.rcRWLock.Lock()
 	defer wm.rcRWLock.Unlock()
 	delete(wm.recvChanMap, requestId)
+}
+
+func (wm *WebsocketManager) registerResChannel(requestId string, recvChan chan ResponseMsg) {
+	wm.rcRWLock.Lock()
+	defer wm.rcRWLock.Unlock()
+	wm.logger.Info("register channel ", "requestId", requestId)
+	wm.recvChanMap[requestId] = recvChan
 }
 
 func (wm *WebsocketManager) clientConnected(pubkey string, channel chan types.RPCRequest) {
