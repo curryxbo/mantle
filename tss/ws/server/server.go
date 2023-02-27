@@ -73,7 +73,6 @@ func OnConnect(wm *WebsocketManager) func(wsc *wsConnection) {
 			for {
 				select {
 				case res := <-wsc.Output():
-					wsc.Logger.Info("---- received ---------")
 					if len(wm.recvChanMap) > 0 {
 						id := res.ID.(tmtypes.JSONRPCStringID).String()
 						recvChan := wm.getResChannel(id)
@@ -82,12 +81,12 @@ func OnConnect(wm *WebsocketManager) func(wsc *wsConnection) {
 								RpcResponse: res,
 								SourceNode:  wsc.nodePublicKey,
 							}
-							return
 						} else {
 							wsc.Logger.Info("[WS]received unrecognized responseID ", "ID", res.ID.(tmtypes.JSONRPCStringID).String(), "CurrentMap", fmt.Sprintf("%v", wm.recvChanMap))
 						}
+					} else {
+						wsc.Logger.Info("[WS]recv chan has been deleted ")
 					}
-					wsc.Logger.Info("[WS]received unrecognized responseID", "ID", res.ID.(tmtypes.JSONRPCStringID).String(), "CurrentMap", fmt.Sprintf("%v", wm.recvChanMap))
 				case <-wsc.readRoutineQuit:
 					return
 				}

@@ -19,18 +19,16 @@ import (
 func (m Manager) agreement(ctx types.Context, request interface{}, method tss.Method) (types.Context, error) {
 	respChan := make(chan server.ResponseMsg)
 	stopChan := make(chan struct{})
-	log.Info("----------- start to register ws channel")
 	if err := m.wsServer.RegisterResChannel("ASK_"+ctx.RequestId(), respChan, stopChan); err != nil {
 		log.Error("failed to register response channel", "step", "agreement", "err", err)
 		return types.Context{}, err
 	}
-	log.Info("----------- end to register ws channel")
 
 	requestBz, err := json.Marshal(request)
 	if err != nil {
 		return types.Context{}, err
 	}
-	log.Info("agreement begin", "request", string(requestBz))
+	log.Info("agreement begin")
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
