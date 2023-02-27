@@ -2,10 +2,11 @@ package server
 
 import (
 	"fmt"
-	tmtypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 	"net"
 	"net/http"
 	"os"
+
+	tmtypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/libs/service"
@@ -73,12 +74,12 @@ func OnConnect(wm *WebsocketManager) func(wsc *wsConnection) {
 				select {
 				case res := <-wsc.Output():
 					func() {
-						wm.rcRWLock.Lock()
-						defer wm.rcRWLock.Unlock()
+
 						if len(wm.recvChanMap) > 0 {
+
 							id := res.ID.(tmtypes.JSONRPCStringID).String()
-							recvChan, ok := wm.recvChanMap[id]
-							if ok {
+							recvChan := wm.getResChannel(id)
+							if recvChan != nil {
 								recvChan <- ResponseMsg{
 									RpcResponse: res,
 									SourceNode:  wsc.nodePublicKey,

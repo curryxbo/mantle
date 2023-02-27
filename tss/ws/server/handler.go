@@ -128,6 +128,17 @@ func (wm *WebsocketManager) registerResChannel(requestId string, recvChan chan R
 	wm.recvChanMap[requestId] = recvChan
 }
 
+func (wm *WebsocketManager) getResChannel(requestId string) chan ResponseMsg {
+	wm.rcRWLock.RLock()
+	defer wm.rcRWLock.RUnlock()
+	recvChan, ok := wm.recvChanMap[requestId]
+	if ok {
+		return recvChan
+	} else {
+		return nil
+	}
+}
+
 func (wm *WebsocketManager) clientConnected(pubkey string, channel chan types.RPCRequest) {
 	wm.scRWLock.Lock()
 	defer wm.scRWLock.Unlock()
