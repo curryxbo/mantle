@@ -85,6 +85,8 @@ func OnConnect(wm *WebsocketManager) func(wsc *wsConnection) {
 									SourceNode:  wsc.nodePublicKey,
 								}
 								return
+							}else {
+								wsc.Logger.Info("[WS]received unrecognized responseID ", "ID", res.ID.(tmtypes.JSONRPCStringID).String(), "CurrentMap", fmt.Sprintf("%v", wm.recvChanMap))
 							}
 						}
 						wsc.Logger.Info("[WS]received unrecognized responseID", "ID", res.ID.(tmtypes.JSONRPCStringID).String(), "CurrentMap", fmt.Sprintf("%v", wm.recvChanMap))
