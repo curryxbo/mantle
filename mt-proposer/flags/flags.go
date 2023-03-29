@@ -8,7 +8,7 @@ import (
 	mtmetrics "github.com/mantlenetworkio/mantle/mt-service/metrics"
 	mtpprof "github.com/mantlenetworkio/mantle/mt-service/pprof"
 	oprpc "github.com/mantlenetworkio/mantle/mt-service/rpc"
-	opsigner "github.com/mantlenetworkio/mantle/mt-signer/client"
+	mtsigner "github.com/mantlenetworkio/mantle/mt-signer/client"
 )
 
 const envVarPrefix = "OP_PROPOSER"
@@ -113,7 +113,7 @@ func init() {
 	optionalFlags = append(optionalFlags, oplog.CLIFlags(envVarPrefix)...)
 	optionalFlags = append(optionalFlags, mtmetrics.CLIFlags(envVarPrefix)...)
 	optionalFlags = append(optionalFlags, mtpprof.CLIFlags(envVarPrefix)...)
-	optionalFlags = append(optionalFlags, opsigner.CLIFlags(envVarPrefix)...)
+	optionalFlags = append(optionalFlags, mtsigner.CLIFlags(envVarPrefix)...)
 
 	Flags = append(requiredFlags, optionalFlags...)
 }

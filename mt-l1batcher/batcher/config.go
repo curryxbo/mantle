@@ -16,7 +16,7 @@ import (
 	mtmetrics "github.com/mantlenetworkio/mantle/mt-service/metrics"
 	mtpprof "github.com/mantlenetworkio/mantle/mt-service/pprof"
 	"github.com/mantlenetworkio/mantle/mt-service/txmgr"
-	opsigner "github.com/mantlenetworkio/mantle/mt-signer/client"
+	mtsigner "github.com/mantlenetworkio/mantle/mt-signer/client"
 )
 
 type Config struct {
@@ -117,7 +117,7 @@ type CLIConfig struct {
 	PprofConfig mtpprof.CLIConfig
 
 	// SignerConfig contains the client config for mt-signer service
-	SignerConfig opsigner.CLIConfig
+	SignerConfig mtsigner.CLIConfig
 }
 
 func (c CLIConfig) Check() error {
@@ -166,6 +166,6 @@ func NewConfig(ctx *cli.Context) CLIConfig {
 		LogConfig:          oplog.ReadCLIConfig(ctx),
 		MetricsConfig:      mtmetrics.ReadCLIConfig(ctx),
 		PprofConfig:        mtpprof.ReadCLIConfig(ctx),
-		SignerConfig:       opsigner.ReadCLIConfig(ctx),
+		SignerConfig:       mtsigner.ReadCLIConfig(ctx),
 	}
 }
