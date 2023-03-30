@@ -27,6 +27,7 @@ import (
 	"github.com/mantlenetworkio/mantle/l2geth/log"
 	"github.com/mantlenetworkio/mantle/l2geth/params"
 	"github.com/mantlenetworkio/mantle/l2geth/rollup/fees"
+	"github.com/mantlenetworkio/mantle/l2geth/rollup/rcfg"
 )
 
 // StateProcessor is a basic Processor, which takes care of transitioning
@@ -127,10 +128,23 @@ func ApplyTransaction(config *params.ChainConfig, bc ChainContext, author *commo
 		root = statedb.IntermediateRoot(config.IsEIP158(header.Number)).Bytes()
 	}
 	*usedGas += gas
-
 	// Create a new receipt for the transaction, storing the intermediate root and gas used by the tx
 	// based on the eip phase, we're passing whether the root touch-delete accounts.
 	receipt := types.NewReceipt(root, failed, *usedGas)
+	daSwitch := statedb.GetState(rcfg.L2GasPriceOracleAddress, rcfg.DaSwitchSlot).Big()
+	if err != nil {
+		return nil, err
+	}
+	if daSwitch.Cmp(common.Big1) == 0 {
+		daFee, daGasPrice, daGasUsed, _, err := fees.DeriveDAGasInfo(msg, statedb)
+		if err != nil {
+			return nil, err
+		}
+		receipt.DAGasPrice = daGasPrice
+		receipt.DAFee = daFee
+		receipt.DAGasUsed = daGasUsed
+
+	}
 	receipt.L1GasPrice = l1GasPrice
 	receipt.L1GasUsed = l1GasUsed
 	receipt.L1Fee = l1Fee
